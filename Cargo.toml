@@ -1,0 +1,75 @@
+[package]
+name = "uai_secureshare_backend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+argon2 = "0.5.1"
+# Used for securely hashing passwords.
+
+async-trait = "0.1.72"
+# Makes it easier to use async functions in traits.
+
+chrono = { version = "0.4.26", features = ["serde"] }
+# Handles dates and times, useful for scheduling or timestamps.
+
+dotenv = "0.15.0"
+# Loads environment variables from a `.env` file for easy configuration.
+
+jsonwebtoken = "9.2.0"
+# Creates and verifies JWTs, commonly used for authentication.
+
+serde = { version = "1.0.183", features = ["derive"] }
+# Converts data to and from formats like JSON or TOML.
+
+serde_json = "1.0.104"
+# Works specifically with JSON for parsing and generating data.
+
+sqlx = { version = "0.8.2", features = ["runtime-async-std-native-tls", "postgres", "chrono", "uuid"] }
+# Async library for working with databases, like PostgreSQL.
+
+uuid = { version = "1.4.1", features = ["serde", "v4"] }
+# Generates unique IDs, often for identifying objects.
+
+validator = { version = "0.16.1", features = ["derive"] }
+# Validates input, like checking if an email is properly formatted.
+
+axum = { version = "0.7.6", features = ["multipart"] }
+# A framework for building web APIs and servers.
+
+axum-extra = { version = "0.9.3", features = ["cookie"] }
+# Adds extra features to Axum, like handling cookies.
+
+tokio = { version = "1.39.3", features = ["full"] }
+# Handles async tasks and I/O for high-performance apps.
+
+tokio-cron-scheduler = "0.13.0"
+# Runs tasks on a schedule, like a cron job.
+
+tower = "0.5.0"
+# Helps build reliable network services with reusable components.
+
+time = "0.3.20"
+# Works with time intervals and formatting.
+
+tower-http = { version = "0.5.2", features = ["cors", "trace"] }
+# Adds HTTP features like CORS and request tracing.
+
+tracing-subscriber = { version = "0.3.18" }
+# Helps with logging and debugging in async apps.
+
+aes = "0.7"
+# Encrypts data securely using the AES algorithm.
+
+block-modes = "0.8"
+# Adds different modes for encrypting data with AES.
+
+rsa = "0.9"
+# Handles encryption and decryption with RSA.
+
+rand = "0.8"
+# Generates random numbers for various tasks.
+
+base64 = "0.22.1"
+# Encodes and decodes data in Base64 format.
+
