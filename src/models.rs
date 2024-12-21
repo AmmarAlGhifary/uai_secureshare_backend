@@ -4,7 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, sqlx::FromRow, sqlx::Type)]
 pub struct User {
     pub id: uuid::Uuid,
-    pub nama: String,
+    pub name: String,
+    pub email: String,
     pub password: String,
     pub public_key: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
