@@ -15,7 +15,7 @@ use crate::error::ErrorMessage;
 
 const MAX_PASSWORD_LENGTH: usize = 64;
 
-pub fn hash(password: impl Into<String>) -> Reslut<String, ErrorMessage> {
+pub fn hash(password: impl Into<String>) -> Result<String, ErrorMessage> {
     let password = password.into();
 
     if password.is_empty() {
@@ -39,7 +39,7 @@ pub fn compare(password: &str, hashed_password: &str) -> Result<bool, ErrorMessa
     if password.is_empty() {
         return Err(ErrorMessage::EmptyPassword);
     }
-    
+
     if password.len() > MAX_PASSWORD_LENGTH {
         return Err(ErrorMessage::ExceededMaxPasswordLenght(MAX_PASSWORD_LENGTH));
     } 
