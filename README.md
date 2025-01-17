@@ -3,8 +3,8 @@
 1. Clone the repository:
 
    ```
-   git clone https://github.com/AarambhDevHub/file-share-rust-backend.git
-   cd file-share-rust-backend
+   git clone https://github.com/AmmarAlGhifary/uai_secureshare_backend.git
+   cd uai_secureshare_backend
    ```
 2. Create a .env file in the root of the project with the following variables:
 
