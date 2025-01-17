@@ -1,15 +1,13 @@
-
 use argon2::{
     password_hash::{
         rand_core::OsRng,
         PasswordHash,
         PasswordHasher,
-        PasswordVerifier, 
+        PasswordVerifier,
         SaltString
-    }, 
+    },
     Argon2
 };
-
 
 use crate::error::ErrorMessage;
 
@@ -23,7 +21,7 @@ pub fn hash(password: impl Into<String>) -> Result<String, ErrorMessage> {
     }
 
     if password.len() > MAX_PASSWORD_LENGTH {
-        return Err(ErrorMessage::ExceededMaxPasswordLenght(MAX_PASSWORD_LENGTH));
+        return Err(ErrorMessage::ExceededMaxPasswordLength(MAX_PASSWORD_LENGTH));
     }
 
     let salt = SaltString::generate(&mut OsRng);
@@ -41,8 +39,8 @@ pub fn compare(password: &str, hashed_password: &str) -> Result<bool, ErrorMessa
     }
 
     if password.len() > MAX_PASSWORD_LENGTH {
-        return Err(ErrorMessage::ExceededMaxPasswordLenght(MAX_PASSWORD_LENGTH));
-    } 
+        return Err(ErrorMessage::ExceededMaxPasswordLength(MAX_PASSWORD_LENGTH));
+    }
 
     let parsed_hash = PasswordHash::new(hashed_password)
     .map_err(|_| ErrorMessage::InvalidHashFormat)?;

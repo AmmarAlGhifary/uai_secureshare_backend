@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
-use crate::models::{File, ReceiverFileDetails, SendFileDetails, ShareLink, User};
+use crate::models::{File, ReceiveFileDetails, SentFileDetails, SharedLink, User};
 
 #[derive(Debug, Clone)]
 pub struct DBClient {
@@ -66,7 +66,7 @@ pub trait UserExt {
         &self,
         shared_id: Uuid,
         user_id: Uuid,
-    ) -> Result<Option<ShareLink>, sqlx::Error>;
+    ) -> Result<Option<SharedLink>, sqlx::Error>;
 
     async fn get_file(
         &self,
@@ -78,14 +78,14 @@ pub trait UserExt {
         user_id: Uuid,
         page: u32,
         limit: usize
-    ) -> Result<(Vec<SendFileDetails>, i64), sqlx::Error>;
+    ) -> Result<(Vec<SentFileDetails>, i64), sqlx::Error>;
 
     async fn get_receive_files(
         &self,
         user_id: Uuid,
         page: u32,
         limit: usize
-    ) -> Result<(Vec<ReceiverFileDetails>, i64), sqlx::Error>;
+    ) -> Result<(Vec<ReceiveFileDetails>, i64), sqlx::Error>;
 
     async fn delete_expired_files(
         &self
@@ -136,7 +136,7 @@ impl UserExt for DBClient {
             r#"
             INSERT INTO users (name, email, password) 
             VALUES ($1, $2, $3) 
-            RETURNING id,  name, email, password, public_key, created_at, updated_at
+            RETURNING id, name, email, password, public_key, created_at, updated_at
             "#,
             name.into(),
             email.into(),
@@ -280,9 +280,9 @@ impl UserExt for DBClient {
         &self,
         shared_id: Uuid,
         user_id: Uuid,
-    ) -> Result<Option<ShareLink>, sqlx::Error> {
-        let share_link = sqlx::query_as!(
-            ShareLink,
+    ) -> Result<Option<SharedLink>, sqlx::Error> {
+        let shared_link = sqlx::query_as!(
+            SharedLink,
             r#"
             SELECT id, file_id, recipient_user_id, password, expiration_date, created_at
             FROM shared_links
@@ -296,7 +296,7 @@ impl UserExt for DBClient {
         .fetch_optional(&self.pool)
         .await?;
 
-        Ok(share_link)
+        Ok(shared_link)
     }
 
     async fn get_file(
@@ -322,11 +322,11 @@ impl UserExt for DBClient {
         user_id: Uuid,
         page: u32,
         limit: usize
-    ) -> Result<(Vec<SendFileDetails>, i64), sqlx::Error> {
+    ) -> Result<(Vec<SentFileDetails>, i64), sqlx::Error> {
         let offset = (page - 1) * limit as u32;
 
         let files = sqlx::query_as!(
-            SendFileDetails,
+            SentFileDetails,
             r#"
                 SELECT
                     f.id AS file_id,
@@ -376,11 +376,11 @@ impl UserExt for DBClient {
         user_id: Uuid,
         page: u32,
         limit: usize
-    ) -> Result<(Vec<ReceiverFileDetails>, i64), sqlx::Error> {
+    ) -> Result<(Vec<ReceiveFileDetails>, i64), sqlx::Error> {
         let offset = (page - 1) * limit as u32;
 
         let files = sqlx::query_as!(
-            ReceiverFileDetails,
+            ReceiveFileDetails,
             r#"
                 SELECT
                     sl.id AS file_id,
