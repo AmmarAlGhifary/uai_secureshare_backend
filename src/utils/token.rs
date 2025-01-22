@@ -39,15 +39,11 @@ pub fn create_token (
 pub fn decode_token<T: Into<String>>(
     token: T,
     secret: &[u8],
-) -> Result<String, HttpError> {
-    let decode = decode::<TokenClaims>(
-        &token.into(), 
-        &DecodingKey::from_secret(secret), 
+) -> Result<TokenClaims, jsonwebtoken::errors::Error> {
+    decode::<TokenClaims>(
+        &token.into(),
+        &DecodingKey::from_secret(secret),
         &Validation::new(jsonwebtoken::Algorithm::HS256),
-    );
-
-    match decode {
-        Ok(token) => Ok(token.claims.sub),
-        Err(_) => Err(HttpError::unauthorized(ErrorMessage::InvalidToken.to_string()))
-    }
+    )
+    .map(|data| data.claims) // Return the claims on success
 }

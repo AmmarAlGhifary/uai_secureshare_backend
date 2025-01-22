@@ -3,6 +3,8 @@ use std::sync::Arc;
 use axum::{extract::Request, http::header, middleware::Next, response::IntoResponse, Extension};
 use serde::{Deserialize, Serialize};
 use axum_extra::extract::cookie::CookieJar;
+use jsonwebtoken::{errors::Error as JwtError, errors::ErrorKind};
+
 
 use crate::{db::UserExt, error::{ErrorMessage, HttpError}, models::User, utils::token, AppState};
 
@@ -37,15 +39,20 @@ pub async fn auth(
         HttpError::unauthorized(ErrorMessage::TokenNotProvided.to_string())
     })?;
 
-    let token_details = 
-        match token::decode_token(token, app_state.env.jwt_secret.as_bytes()) {
-            Ok(token_details) => token_details,
-            Err(_) => {
-                return Err(HttpError::unauthorized(ErrorMessage::InvalidToken.to_string()));
+    let token_details = match token::decode_token(token, app_state.env.jwt_secret.as_bytes()) {
+        Ok(claims) => claims,
+        Err(err) => {
+            use jsonwebtoken::errors::ErrorKind; // Import ErrorKind
+            match *err.kind() {
+                ErrorKind::ExpiredSignature => {
+                    return Err(HttpError::unauthorized("Token has expired.".to_string()))
+                }
+                _ => return Err(HttpError::unauthorized(ErrorMessage::InvalidToken.to_string())),
             }
-        };
-    
-    let user_id = uuid::Uuid::parse_str(&token_details.to_string()).unwrap();
+        }
+    };
+
+    let user_id = uuid::Uuid::parse_str(&token_details.sub).unwrap();
 
     let user = app_state.db_client.get_user(Some(user_id), None, None)
         .await

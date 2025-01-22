@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
 use axum::{http::{header, HeaderMap, StatusCode}, response::IntoResponse, routing::post, Extension, Json, Router};
-use axum_extra::extract::cookie::Cookie;
+use axum_extra::extract::cookie::{Cookie, CookieJar};
 use validator::Validate;
+
 
 use crate::{db::UserExt, dtos::{LoginUserDto, RegisterUserDto, Response, UserLoginResponseDto}, error::{ErrorMessage, HttpError}, utils::{keys::generate_key, password, token}, AppState};
 
@@ -10,8 +11,22 @@ pub fn auth_handler() -> Router {
     Router::new()
         .route("/register", post(register))
         .route("/login", post(login))
+        .route("/logout", post(logout))
 }
 
+
+pub async fn logout(
+    cookie_jar: CookieJar,
+) -> impl IntoResponse {
+    let jar = cookie_jar.remove(Cookie::named("token"));
+
+    let response = Json(serde_json::json!({
+        "status": "success",
+        "message": "Logged out successfully",
+    }));
+
+    (StatusCode::OK, jar, response)
+}
 
 pub async fn register(
     Extension(app_state): Extension<Arc<AppState>>,
@@ -102,3 +117,4 @@ pub async fn login(
     }
 
 }
+

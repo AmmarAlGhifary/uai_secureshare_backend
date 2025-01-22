@@ -17,7 +17,7 @@ pub async fn generate_key(
     let mut rng = OsRng;
 
     let private_key = RsaPrivateKey::new(&mut rng, 2048)
-    .map_err(|e|{
+    .map_err(|e| {
         HttpError::server_error(e.to_string())
     })?;
 
@@ -29,7 +29,7 @@ pub async fn generate_key(
     let public_key_prm = public_key.to_pkcs1_pem(rsa::pkcs1::LineEnding::LF)
         .map_err(|e| HttpError::server_error(e.to_string()))?;
 
-    let public_key_b64 = STANDARD.encode(private_key_pem.as_bytes());
+    let public_key_b64 = STANDARD.encode(public_key_prm.as_bytes());
 
     let user_id = uuid::Uuid::parse_str(&user.id.to_string()).unwrap();
 
@@ -42,7 +42,7 @@ pub async fn generate_key(
     fs::create_dir_all(&private_keys_dir)
         .map_err(|e| HttpError::server_error(e.to_string()))?;
 
-    let pem_file_path = format!("{}/{}.pem", private_keys_dir,user_id.clone());
+    let pem_file_path = format!("{}/{}.pem",private_keys_dir,user_id.clone());
     let mut file = File::create(&pem_file_path)
         .map_err(|e| HttpError::server_error(e.to_string()))?;
 
