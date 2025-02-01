@@ -3,6 +3,8 @@
 1. Clone the repository:
 
    ```
+   git clone https://github.com/AmmarAlGhifary/uai_secureshare_backend.git
+   cd uai_secureshare_backend
    git clone https://github.com/AmmarAlGhifary/uai_secureshare_backend
    cd uai-secureshare-backend
    ```
