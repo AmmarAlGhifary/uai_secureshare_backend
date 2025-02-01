@@ -51,3 +51,36 @@
 - **GET /api/file/retrieve**: Retrieve an uploaded file by ID (requires authentication).
 - **POST /api/list/send**: Send a list of files to another user.
 - **GET /api/list/receive**: Retrieve the list of files received from another user.
+
+
+```
+uai_secureshare_backend
+├─ .gitignore
+├─ Cargo.lock
+├─ Cargo.toml
+├─ migrations
+│  └─ 20241216104626_tables.sql
+├─ README.md
+└─ src
+   ├─ config.rs          # Configuration settings for the app
+   ├─ db.rs              # Database connection and setup
+   ├─ dtos.rs            # Data Transfer Objects with validation
+   ├─ error.rs           # Error handling logic
+   ├─ handler
+   │  ├─ auth.rs         # Authentication handlers
+   │  ├─ file.rs         # File management handlers
+   │  ├─ file_query.rs   # Handlers for querying files
+   │  ├─ mod.rs          # Module for handler subdirectory
+   │  └─ users.rs        # User management handlers
+   ├─ main.rs            # Main entry point for the application
+   ├─ middleware.rs      # Middleware logic for Axum
+   ├─ models.rs          # Database models and schema
+   ├─ router.rs          # Router definitions for Axum
+   └─ utils
+      ├─ decrypt.rs      # Decryption utilities
+      ├─ encrypt.rs      # Encryption utilities
+      ├─ keys.rs         # Key generation and management
+      ├─ mod.rs          # Module for utils subdirectory
+      ├─ password.rs     # Password hashing and verification
+      └─ token.rs        # Token management utilities
+```

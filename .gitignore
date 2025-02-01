@@ -2,3 +2,5 @@
 .env
 .sqlx/
 .sqlx/*.json
+.env.example
+/assets
